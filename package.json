@@ -1,0 +1,19 @@
+{
+  "name": "lida-server",
+  "version": "0.1.0",
+  "description": "The server part of a project of lida. ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/windsting/lida-server.git"
+  },
+  "author": "windsting999",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/windsting/lida-server/issues"
+  },
+  "homepage": "https://github.com/windsting/lida-server#readme"
+}
