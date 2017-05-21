@@ -24,6 +24,7 @@
 | full_score | integer  | 满分    |
 | price     | integer  | 价格    |
 | duration  | interger | 时限(秒) |
+| difficuty | interger | 困难程度（1 最简单，10变态难度） |
 
 
 ### media_type(媒体类型)
@@ -32,6 +33,15 @@
 | id        | integer | id   |
 | name      | string  | 类型名 |
 | icon_url  | string  | 图标地址 |
+
+
+### media_content(媒体内容)
+| 字段         | 类型      | 用途   |
+|------------|---------|------|
+| id         | integer | id   |
+| owner_id   | integer | 上传者id|
+| content    | string  | 文件名或文本内容 |
+| filetype   | string  | 文件类型 |
 
 
 ### replace(可替换内容)
@@ -58,13 +68,14 @@
 | grant_type| integer  | 公开、聚会、链接分享 |
 | name      | string   | 名称         |
 | desc      | string   | 简介         |
+| cover_id  | integer  | 简介图片的media_id   |
 | price     | integer  | 价格         |
 | order_time | datatime | 下单时间       |
 | start_time | datatime | 开始时间       |
 | end_time   | datatime | 结束时间       |
 | gift_score | integer  | 发奖分数       |
 | city      | integer  | 活动城市       |
-| paid      | bool     | 付款状态       |
+| paid      | int     | 付款状态       |
 
 
 ### product(商品)
@@ -73,7 +84,8 @@
 | id         | integer | id   |
 | mechant_id | integer | 商户id |
 | name       | string  | 名称   |
-| desc       | string  | 简介   |
+| desc       | string  | 简介文字   |
+| image_id   | integer | 简介图片的media_id   |
 | price      | integer | 价格   |
 | sku        | integer | 库存   |
 
@@ -85,6 +97,7 @@
 | grant_id  | integer  | 邀约id |
 | product_id| integer  | 商品id |
 | content   | string   | 名称   |
+| image_id  | integer  | 简介图片的media_id |
 | count     | integer  | 数量   |
 | ranking   | integer  | 名次   |
 | min_score | integer  | 发奖分数|
@@ -96,15 +109,7 @@
 | id          | intege  | id   |
 | template_id | integer | 模板id |
 | grant_id    | integer | 邀约id |
-
-
-### media_content(媒体内容)
-| 字段         | 类型      | 用途   |
-|------------|---------|------|
-| id         | integer | id   |
-| owner_id   | integer | 上传者id|
-| content    | string  | 文件名或文本内容 |
-| filetype   | string  | 文件类型 |
+| mode        | integer | 难度模式 |
 
 
 ### replace_content(替换内容)
@@ -133,11 +138,12 @@
 | id         | integer  | id    |
 | grant_id   | integer  | 邀约id  |
 | player_id  | integer  | 参与者id |
+| rank       | integer  | 名次     |
 | address_id | integer  | 寄送地址  |
 | mail_type  | integer  | 快递公司  |
 | mail_id    | integer  | 快递单号  |
 | score      | integer  | 收货结果  |
-| comment    | string   | 收货结果  |
+| comment    | string   | 收货评价  |
 | created_at | datatime | 响应时刻  |
 
 
@@ -208,5 +214,5 @@
 | id    | integer | id   |
 | type  | integer | 类型id |
 | name  | string  | 参数名  |
-| desc  | string  | 参数名  |
+| desc  | string  | 参数描述  |
 | value | integer | 参数值  |

@@ -17,7 +17,12 @@ var models = [
 		tableName: 'account',
 		hasTimestamps: true,
 		grant(){return this.hasMany('Grant','publisher')},
-		relations:['grant']
+		grantInvite(){return this.hasMany('GrantInvite','invited_id')},
+		grantRefer(){return this.hasMany('GrantRefer','player_id')},
+		address(){return this.hasMany('Address')},
+		messageIn(){return this.hasMany('Message','user_id')},
+		messageOut(){return this.hasMany('Message','sender_id')},
+		relations:['grant','grantInvite','grantRefer','address','messageIn','messageOut']
 	}),
 	defModel('StageTemplate',{
 		tableName: 'stage_template',
@@ -34,14 +39,17 @@ var models = [
 		stageTemplate(){
 			return this.belongsTo('StageTemplate');
 		},
-		relations:['stageTemplate']
+		mediaType(){
+			return this.belongsTo('MediaType')
+		},
+		relations:['mediaType']
 	}),
 	defModel('GrantType',{
 		tableName: 'grant_type',
 		grant(){
-			return this.hasMany('Grant');
+			return this.hasMany('Grant','grant_type');
 		},
-		relations:['grant']
+		relations:[]
 	}),
 	defModel('Grant',{
 		tableName: 'grant',
@@ -54,10 +62,20 @@ var models = [
 		stage(){
 			return this.hasMany('Stage');
 		},
-		relations:['publisher','grantType','stage']
+		cover(){
+			return this.belongsTo('MediaContent', 'cover_id');
+		},
+		gift(){
+			return this.hasMany('Gift');
+		},
+		relations:['publisher','grantType','stage.replaceContent', 'cover','gift.product.image']
 	}),
 	defModel('Product',{
 		tableName: 'product',
+		image(){
+			return this.belongsTo('MediaContent', 'image_id')
+		},
+		relations:['image']
 	}),
 	defModel('Gift',{
 		tableName: 'gift',
@@ -67,7 +85,10 @@ var models = [
 		product(){
 			return this.belongsTo('Product');
 		},
-		relations:['grant','product']
+		image(){
+			return this.belongsTo('MediaContent', 'image_id');
+		},
+		relations:['grant','product', 'image']
 	}),
 	defModel('Stage',{
 		tableName: 'stage',
@@ -124,7 +145,10 @@ var models = [
 		address(){
 			return this.belongsTo('Address');
 		},
-		relations:['grant','player','address'],
+		task(){
+			return this.hasMany('Task','refer_id');
+		},
+		relations:['grant','player','address','task'],
 		hasTimestamps: true
 	}),
 	defModel('Task',{
@@ -132,10 +156,10 @@ var models = [
 		stage(){
 			return this.belongsTo('Stage');
 		},
-		player(){
-			return this.belongsTo('Account', 'player_id');
+		refer(){
+			return this.belongsTo('GrantRefer', 'refer_id');
 		},
-		relations:['stage','player'],
+		relations:['stage','refer'],
 		hasTimestamps: true
 	}),
 	defModel('Location',{
@@ -183,10 +207,10 @@ Promise.map(models, model=>{
 	})
 }).then(tables=>{
 	var fs = require('fs');
-	fs.writeFile('./db/source/tables.json', JSON.stringify(tables), err=>{
-		if(err)
-			console.log(err);
-	});
+	// fs.writeFile('./db/source/tables.json', JSON.stringify(tables), err=>{
+	// 	if(err)
+	// 		console.log(err);
+	// });
 });
 
 

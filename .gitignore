@@ -39,3 +39,4 @@ jspm_packages
 # develop database file
 dev.sqlite3
 .env
+upload/

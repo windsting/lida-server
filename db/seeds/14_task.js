@@ -5,7 +5,7 @@ exports.seed = function(knex, Promise) {
     .then(function () {
       // Inserts seed entries
       return knex('task').insert([
-        {id: 3, player_id: 10000002, stage_id: 50000001, score: 13}
+        {id: 3, refer_id: 1, stage_id: 50000001, score: 13}
       ]);
     });
 };

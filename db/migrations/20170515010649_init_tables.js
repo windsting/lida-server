@@ -25,6 +25,7 @@ exports.up = function(knex, Promise) {
   			table.integer('full_score');
   			table.integer('price');
   			table.integer('duration');
+  			table.integer('difficuty');
   			// table.timestamps();
   		})
   		.dropTableIfExists('media_type')
@@ -32,6 +33,14 @@ exports.up = function(knex, Promise) {
   			table.bigIncrements().primary();
   			table.string('name').notNullable();
   			table.string('icon_url');
+  		})
+  		.dropTableIfExists('media_content')
+  		.createTable('media_content', function (table) {
+  			table.bigIncrements().primary();
+  			table.bigInteger('owner_id').references('id').inTable('account');
+  			table.string('content');
+  			table.string('filetype');
+  			table.timestamps(true ,true);
   		})
   		.dropTableIfExists('replace')
   		.createTable('replace', function (table) {
@@ -53,13 +62,14 @@ exports.up = function(knex, Promise) {
   			table.bigInteger('grant_type').references('id').inTable('grant_type');
   			table.string('name').notNullable();
   			table.string('desc').notNullable();
+  			table.bigInteger('cover_id').references('id').inTable('media_content');
   			table.integer('price');
   			table.timestamp('order_time').defaultTo(knex.fn.now());
   			table.timestamp('start_time').defaultTo(knex.fn.now());
   			table.timestamp('end_time').defaultTo(knex.fn.now());
   			table.integer('gift_score');
   			table.integer('city');
-  			table.boolean('paid');
+  			table.integer('paid');
   		})
   		.dropTableIfExists('product')
   		.createTable('product', function (table) {
@@ -67,6 +77,7 @@ exports.up = function(knex, Promise) {
   			table.bigInteger('mechant_id').defaultTo(0);
   			table.string('name').notNullable();
   			table.string('desc').notNullable();
+  			table.bigInteger('image_id').references('id').inTable('media_content');
   			table.integer('price');
   			table.integer('sku');
   			table.timestamps(true, true);
@@ -75,25 +86,19 @@ exports.up = function(knex, Promise) {
   		.createTable('gift', function (table) {
   			table.bigIncrements().primary();
   			table.bigInteger('grant_id').references('id').inTable('grant');
-  			table.bigInteger('product_id').references('id').inTable('product');
-  			table.string('content');
-  			table.integer('count').notNullable();
-  			table.integer('ranking');
-  			table.integer('min_score');
+  			table.bigInteger('product_id').references('id').inTable('product').defaultTo(null);
+  			table.string('content').defaultTo('');
+  			table.bigInteger('image_id').references('id').inTable('media_content').defaultTo(null);
+  			table.integer('count').defaultTo(1);
+  			table.integer('ranking').defaultTo(1);
+  			table.integer('min_score').defaultTo(0);
   		})
   		.dropTableIfExists('stage')
   		.createTable('stage', function (table) {
   			table.bigIncrements().primary();
   			table.bigInteger('template_id').references('id').inTable('stage_template');
   			table.bigInteger('grant_id').references('id').inTable('grant');
-  		})
-  		.dropTableIfExists('media_content')
-  		.createTable('media_content', function (table) {
-  			table.bigIncrements().primary();
-  			table.bigInteger('owner_id').references('id').inTable('account');
-  			table.string('content');
-  			table.string('filetype');
-  			table.timestamps(true ,true);
+  			table.integer('mode');
   		})
   		.dropTableIfExists('replace_content')
   		.createTable('replace_content', function (table) {
@@ -109,26 +114,30 @@ exports.up = function(knex, Promise) {
   			table.bigInteger('invited_id').references('id').inTable('account');
   			table.integer('status');
   			table.timestamps(true, true);
+  			table.unique(['grant_id', 'invited_id']);
   		})
   		.dropTableIfExists('grant_refer')
   		.createTable('grant_refer', function (table) {
   			table.bigIncrements().primary();
   			table.bigInteger('grant_id').references('id').inTable('grant');
   			table.bigInteger('player_id').references('id').inTable('account');
+  			table.integer('rank');
   			table.bigInteger('address_id').references('id').inTable('address');
   			table.string('mail_type');
   			table.string('mail_id');
   			table.integer('score');
   			table.string('comment');
   			table.timestamps(true, true);
+  			table.unique(['grant_id', 'player_id']);
   		})
   		.dropTableIfExists('task')
   		.createTable('task', function (table) {
   			table.bigIncrements().primary();
-  			table.bigInteger('player_id').references('id').inTable('account');
+  			table.bigInteger('refer_id').references('id').inTable('grant_refer');
   			table.bigInteger('stage_id').references('id').inTable('stage');
   			table.integer('score');
   			table.timestamps();
+  			table.unique(['refer_id', 'stage_id']);
   		})
   		.dropTableIfExists('location')
   		.createTable('location', function (table) {
